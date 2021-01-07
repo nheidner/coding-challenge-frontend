@@ -1,0 +1,29 @@
+{
+    "records": [
+        {
+            "id": "recMUqLOa3lfxxd5v",
+            "fields": { "color": "#E88735", "name": "IT-Self-Service" },
+            "createdTime": "2021-01-04T14:41:37.000Z"
+        },
+        {
+            "id": "recdvLar8TXMUhPRk",
+            "fields": { "color": "#FF3333", "name": "Personal" },
+            "createdTime": "2021-01-04T14:48:50.000Z"
+        },
+        {
+            "id": "recjfUkuYDGY7JrIo",
+            "fields": { "color": "#9E9E9E", "name": "Prozess" },
+            "createdTime": "2021-01-05T06:38:00.000Z"
+        },
+        {
+            "id": "reccu9GehZnPWnwJH",
+            "fields": { "color": "#006EE6", "name": "Spielregeln" },
+            "createdTime": "2021-01-04T14:45:09.000Z"
+        },
+        {
+            "id": "recORhO5ZVPf4HIHX",
+            "fields": { "color": "#7DA11A", "name": "Wegweiser" },
+            "createdTime": "2020-12-18T14:00:12.000Z"
+        }
+    ]
+}
