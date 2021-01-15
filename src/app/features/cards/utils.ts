@@ -1,7 +1,7 @@
 import { AsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
-import { fetchData } from '../../lib/api/fetchData';
-import { Card } from '../../lib/utils/types';
+import { fetchData } from '../../../lib/api/fetchData';
+import { Card } from '../../../lib/types';
 
 interface QueryOptions {
     category?: string;

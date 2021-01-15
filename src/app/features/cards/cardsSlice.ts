@@ -5,8 +5,8 @@ import {
     PayloadAction,
 } from '@reduxjs/toolkit';
 
-import { RootState, AppDispatch } from '../../lib/reduxStore';
-import { Card } from '../../lib/utils/types';
+import { RootState, AppDispatch } from '../../reduxStore';
+import { Card } from '../../../lib/types';
 import {
     fetchCards,
     isPendingAction,
@@ -89,6 +89,13 @@ const cardsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        builder.addMatcher(isPendingAction, (state, action) => {
+            const { requestId } = action.meta;
+            if (state.status === 'idle' || 'succeeded') {
+                state.status = 'loading';
+                state.currentRequestId = requestId;
+            }
+        });
         builder.addMatcher(isFulfilledAction, (state, action) => {
             const { payload } = action;
             const { requestId } = action.meta;
@@ -117,13 +124,6 @@ const cardsSlice = createSlice({
                 state.error = 'request failed';
             }
         });
-        builder.addMatcher(isPendingAction, (state, action) => {
-            const { requestId } = action.meta;
-            if (state.status === 'idle' || 'succeeded') {
-                state.status = 'loading';
-                state.currentRequestId = requestId;
-            }
-        });
     },
 });
 
@@ -132,7 +132,6 @@ const { categoryChanged, searchTermChanged } = cardsSlice.actions;
 export default cardsSlice.reducer;
 
 export const {
-    selectAll: selectAllCards,
     selectIds: selectCardsIds,
     selectById: selectCardById,
 } = cardsAdapter.getSelectors((state: RootState) => state.cards);

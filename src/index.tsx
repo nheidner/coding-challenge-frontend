@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.module.sass';
-import App from './App';
+import App from './app/App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 
-import store from './lib/reduxStore';
-import { fetchCategories } from './features/categories/categoriesSlice';
+import store from './app/reduxStore';
+import { fetchCategories } from './app/features/categories/categoriesSlice';
 
 store.dispatch(fetchCategories());
 

@@ -2,7 +2,7 @@ import { EntityId } from '@reduxjs/toolkit';
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from '../../../lib/reduxStore';
+import { RootState } from '../../../reduxStore';
 import { selectCategoriesByIds } from '../../categories/categoriesSlice';
 import {
     selectCardsIds,

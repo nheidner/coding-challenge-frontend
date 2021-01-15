@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectAllCategories } from '../categoriesSlice';
 import { fetchCardsforCategory } from '../../cards/cardsSlice';
-import { RootState } from '../../../lib/reduxStore';
+import { RootState } from '../../../reduxStore';
 import styles from './CategorySelect.module.sass';
 
 export const CategorySelect = () => {

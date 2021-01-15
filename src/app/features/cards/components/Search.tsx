@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../lib/reduxStore';
+import { RootState } from '../../../reduxStore';
 import { fetchCardsForSearch } from '../cardsSlice';
 import styles from './Search.module.sass';
 
