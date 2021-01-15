@@ -1,0 +1,59 @@
+@import 'src/lib/utils/base'
+   
+.cards 
+    display: flex
+    flex-wrap: wrap
+    justify-content: flex-start
+    padding: calc(#{$navbar-height-mobile} + #{$card-item-margin}) $card-item-margin $card-item-margin
+    @include media("screen", ">=tablet")
+        padding-top: calc(#{$navbar-height-tablet} + #{$card-item-margin})
+
+    .card 
+        flex: 0 1 auto
+        width: calc(100% - 2 * #{$card-item-margin})
+        min-height: 200px
+        margin: $card-item-margin
+        box-sizing: border-box
+        background-color: #fff
+        padding: $card-item-padding
+        border-radius: 0.3rem
+        overflow: hidden
+        box-shadow: rgba(0, 0, 0, 0.25) .1875rem .1875rem .3125rem 0
+        @include media("screen", ">=tablet", "<desktop")
+            width: calc(50% - 2 * #{$card-item-margin})
+        @include media("screen", ">=desktop") 
+            width: calc(25% - 2 * #{$card-item-margin})
+        .title
+            color: #333
+            font-size: 1.5rem
+            margin-top: calc(0.6rem - #{$card-item-padding}) 
+            margin-bottom: 0.6rem
+        .categories
+            display: flex
+            .category
+                outline: none
+                margin-right: 1rem
+                padding: 0.1rem .5rem
+                border-radius: .25rem
+                font-size: .75rem
+                text-transform: uppercase
+                color: #fff
+                background-color: rgb(153, 153, 153)
+                border: none
+                cursor: pointer
+        .teaser
+            color: #333
+            margin-top: 1rem
+            margin-bottom: 0
+    .skeleton 
+        text-indent: -9999rem
+
+
+.error 
+    position: absolute
+    width: 100%
+    height: 100%
+    display: flex
+    justify-content: center
+    align-items: center
+

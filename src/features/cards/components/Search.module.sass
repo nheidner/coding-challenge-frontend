@@ -1,0 +1,35 @@
+@import 'src/lib/utils/base'
+    
+.search
+    width: 50%
+    @include media("screen", ">=tablet")
+        margin-left: 1rem
+    .inputDiv
+        +filter-elem
+        min-width: 140px
+        position: relative
+        .searchInput
+            width: 100%
+            border: none
+            outline: none
+            appearance: none
+            -webkit-appearance: none
+            -moz-appearance: none
+            background-color:  rgb(20, 85, 180)
+            color: #fff
+            font-size: 1rem
+            font-weight: 400
+            padding: 0.4rem 5%
+            line-height: 1.2rem
+            box-sizing: border-box
+            &::placeholder 
+                color: #fff
+                font-size: 1rem
+        .searchIcon
+            position: absolute
+            width: auto
+            height: 1.2rem
+            color: #fff
+            top: 0.4rem
+            right: 0
+            cursor: pointer

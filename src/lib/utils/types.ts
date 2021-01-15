@@ -3,7 +3,7 @@ export interface Card {
     fields: {
         teaser: string;
         title: string;
-        category: string[];
+        categoryId: string[];
     };
     createdTime: string;
 }

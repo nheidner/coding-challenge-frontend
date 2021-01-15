@@ -1,0 +1,33 @@
+@import 'src/lib/utils/base'
+    
+.navbar 
+    width: 100%
+    height: $navbar-height-mobile
+    position: fixed
+    z-index: 100
+    top: 0
+    background-color: rgb(20, 85, 180)
+    display: flex
+    justify-content: center
+    align-items: center
+    @include media("screen", ">tablet") 
+        height: $navbar-height-tablet
+    .container
+        width: 100%
+        box-sizing: border-box
+        padding: 0 $card-item-margin * 2
+        @include media("screen", ">tablet")
+            display: flex
+            justify-content: space-between
+            align-items: center
+
+        h1
+            color: #fff  
+            margin: 0.4rem 0
+        .filterOptions
+            display: flex
+            @include media("screen", ">tablet")
+                align-items: center
+            
+        
+

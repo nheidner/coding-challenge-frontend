@@ -1,7 +1,7 @@
 export const fetchData = async <Response>(
     endpoint: string
 ): Promise<Response> => {
-    const config = {
+    const config: RequestInit = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     };

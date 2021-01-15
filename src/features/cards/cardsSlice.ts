@@ -6,27 +6,13 @@ import {
 } from '@reduxjs/toolkit';
 
 import { RootState, AppDispatch } from '../../lib/reduxStore';
-import { Card } from '../../lib/types';
+import { Card } from '../../lib/utils/types';
 import {
     fetchCards,
     isPendingAction,
     isRejectedAction,
     isFulfilledAction,
 } from './utils';
-
-const cardsAdapter = createEntityAdapter<Card>();
-
-const initialState = cardsAdapter.getInitialState<{
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-    currentCategory: string;
-    currentSearchTerm: string;
-}>({
-    status: 'idle',
-    error: null,
-    currentCategory: '',
-    currentSearchTerm: '',
-});
 
 export const fetchAllCards = createAsyncThunk(
     'cards/fetchAllCards',
@@ -36,27 +22,59 @@ export const fetchAllCards = createAsyncThunk(
 );
 
 export const fetchCardsforCategory = createAsyncThunk<
-    Promise<Card[]>,
+    Promise<Card[] | undefined>,
     string,
     { dispatch: AppDispatch; state: RootState }
 >('cards/fetchCardsforCategory', async (category, thunkApi) => {
-    const search = thunkApi.getState().cards.currentSearchTerm;
-
+    const {
+        currentRequestId,
+        status,
+        currentSearchTerm: search,
+    } = thunkApi.getState().cards;
     thunkApi.dispatch(categoryChanged(category));
+
+    if (status !== 'loading' || thunkApi.requestId !== currentRequestId) {
+        return;
+    }
 
     return await fetchCards({ category, search });
 });
 
 export const fetchCardsForSearch = createAsyncThunk<
-    Promise<Card[]>,
+    Promise<Card[] | undefined>,
     string,
     { dispatch: AppDispatch; state: RootState }
 >('cards/fetchCardsforSearch', async (search, thunkApi) => {
-    const category = thunkApi.getState().cards.currentCategory;
-
+    const {
+        currentCategory: category,
+        currentRequestId,
+        status,
+    } = thunkApi.getState().cards;
     thunkApi.dispatch(searchTermChanged(search));
 
+    if (status !== 'loading' || thunkApi.requestId !== currentRequestId) {
+        return;
+    }
+
     return await fetchCards({ category, search });
+});
+
+const cardsAdapter = createEntityAdapter<Card>();
+
+const initialState = cardsAdapter.getInitialState<{
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    currentCategory: string;
+    currentSearchTerm: string;
+    noItems: boolean;
+    currentRequestId: string | undefined;
+}>({
+    status: 'idle',
+    error: null,
+    currentCategory: '',
+    currentSearchTerm: '',
+    noItems: false,
+    currentRequestId: undefined,
 });
 
 const cardsSlice = createSlice({
@@ -71,16 +89,40 @@ const cardsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addMatcher(isFulfilledAction, (state, { payload }) => {
-            state.status = 'succeeded';
-            cardsAdapter.setAll(state, payload);
+        builder.addMatcher(isFulfilledAction, (state, action) => {
+            const { payload } = action;
+            const { requestId } = action.meta;
+            if (
+                state.status === 'loading' &&
+                state.currentRequestId === requestId
+            ) {
+                if (payload.length > 0) {
+                    state.noItems = false;
+                } else {
+                    state.noItems = true;
+                }
+                state.status = 'succeeded';
+                cardsAdapter.setAll(state, payload);
+                state.currentRequestId = undefined;
+            }
         });
         builder.addMatcher(isRejectedAction, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message || 'request failed';
+            const { requestId } = action.meta;
+            if (
+                state.status === 'loading' &&
+                state.currentRequestId === requestId
+            ) {
+                console.error(action.error.message);
+                state.status = 'failed';
+                state.error = 'request failed';
+            }
         });
-        builder.addMatcher(isPendingAction, (state) => {
-            state.status = 'loading';
+        builder.addMatcher(isPendingAction, (state, action) => {
+            const { requestId } = action.meta;
+            if (state.status === 'idle' || 'succeeded') {
+                state.status = 'loading';
+                state.currentRequestId = requestId;
+            }
         });
     },
 });

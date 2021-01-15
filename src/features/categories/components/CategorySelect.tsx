@@ -1,9 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectAllCategories } from './categoriesSlice';
-import { fetchCardsforCategory } from '../cards/cardsSlice';
-import { RootState } from '../../lib/reduxStore';
+import { selectAllCategories } from '../categoriesSlice';
+import { fetchCardsforCategory } from '../../cards/cardsSlice';
+import { RootState } from '../../../lib/reduxStore';
+import styles from './CategorySelect.module.sass';
 
 export const CategorySelect = () => {
     const dispatch = useDispatch();
@@ -25,9 +26,14 @@ export const CategorySelect = () => {
     ));
 
     return (
-        <select value={category} onChange={onCategoryChanged}>
-            <option value=''>Alle Kategorien</option>
-            {categoryOptions}
-        </select>
+        <div className={styles.selectCategory}>
+            <select
+                className={styles.select}
+                value={category}
+                onChange={onCategoryChanged}>
+                <option value=''>Alle Kategorien</option>
+                {categoryOptions}
+            </select>
+        </div>
     );
 };

@@ -1,7 +1,7 @@
 import { AsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
 import { fetchData } from '../../lib/api/fetchData';
-import { Card } from '../../lib/types';
+import { Card } from '../../lib/utils/types';
 
 interface QueryOptions {
     category?: string;
@@ -24,14 +24,14 @@ export const createUrl = (url: string, queryOptions?: QueryOptions): string =>
     (queryOptions ? `?${createQueryString(queryOptions as QueryOptions)}` : '');
 
 export const fetchCards = async (queryOptions?: QueryOptions) => {
+    const url = createUrl(
+        'https://orgavision-codingchallenge.azurewebsites.net/v1/article',
+        queryOptions
+    );
+
     const res = await fetchData<{
         records: Card[];
-    }>(
-        createUrl(
-            'https://orgavision-codingchallenge.azurewebsites.net/v1/article',
-            queryOptions
-        )
-    );
+    }>(url);
 
     return res.records;
 };

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import './App.css';
+import styles from './App.module.sass';
 import { Cards } from './features/cards/components/Cards';
 import { Navbar } from './components/Navbar';
 
 function App() {
     return (
-        <div className='App'>
+        <div className={styles.app}>
             <Navbar />
             <Cards />
         </div>
