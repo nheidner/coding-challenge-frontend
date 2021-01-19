@@ -1,36 +1,33 @@
 import { EntityId } from '@reduxjs/toolkit';
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useQuery } from '../../../../lib/hooks/useQuery';
 
 import { RootState } from '../../../reduxStore';
 import { selectCategoriesByIds } from '../../categories/categoriesSlice';
-import {
-    selectCardsIds,
-    selectCardById,
-    fetchAllCards,
-    fetchCardsforCategory,
-} from '../cardsSlice';
+import { selectCardsIds, selectCardById, fetchCards } from '../cardsSlice';
 import styles from './Cards.module.sass';
 
 const Card: FC<{ id: EntityId }> = ({ id }) => {
-    const dispatch = useDispatch();
     const card = useSelector((state: RootState) => selectCardById(state, id));
     const categoriesData = useSelector((state: RootState) =>
         selectCategoriesByIds(state, card ? card.fields.categoryId : [])
     );
+    const query = useQuery();
 
-    const onCategoryClicked = (category: string) =>
-        dispatch(fetchCardsforCategory(category));
-
-    const categories = categoriesData.map((category) => (
-        <button
-            className={styles.category}
-            key={category.id}
-            style={{ backgroundColor: category.fields.color }}
-            onClick={() => onCategoryClicked(category.fields.name)}>
-            {category.fields.name}
-        </button>
-    ));
+    const categories = categoriesData.map((category) => {
+        query.set('category', category.fields.name);
+        return (
+            <Link
+                className={styles.category}
+                to={`/?${query.toString()}`}
+                key={category.id}
+                style={{ backgroundColor: category.fields.color }}>
+                {category.fields.name}
+            </Link>
+        );
+    });
 
     if (!card) {
         return <div></div>;
@@ -52,11 +49,14 @@ export const Cards = () => {
     const noItems = useSelector((state: RootState) => state.cards.noItems);
     const errorMessage = useSelector((state: RootState) => state.cards.error);
 
+    const query = useQuery();
+    const search = query.get('search');
+    console.log('search: ', search);
+    const category = query.get('category');
+
     useEffect(() => {
-        if (status === 'idle') {
-            dispatch(fetchAllCards());
-        }
-    });
+        dispatch(fetchCards({ search, category }));
+    }, [dispatch, search, category]);
 
     if (status === 'loading') {
         return (

@@ -7,56 +7,35 @@ import {
 
 import { RootState, AppDispatch } from '../../reduxStore';
 import { Card } from '../../../lib/types';
-import {
-    fetchCards,
-    isPendingAction,
-    isRejectedAction,
-    isFulfilledAction,
-} from './utils';
+import { createUrl } from './utils';
+import { fetchData } from '../../../lib/api/fetchData';
 
-export const fetchAllCards = createAsyncThunk(
-    'cards/fetchAllCards',
-    async () => {
-        return await fetchCards();
-    }
-);
-
-export const fetchCardsforCategory = createAsyncThunk<
+export const fetchCards = createAsyncThunk<
     Promise<Card[] | undefined>,
-    string,
+    { search: string | null; category: string | null },
     { dispatch: AppDispatch; state: RootState }
->('cards/fetchCardsforCategory', async (category, thunkApi) => {
-    const {
-        currentRequestId,
-        status,
-        currentSearchTerm: search,
-    } = thunkApi.getState().cards;
-    thunkApi.dispatch(categoryChanged(category));
+>('cards/fetchCards', async (params, thunkApi) => {
+    const { currentRequestId, status } = thunkApi.getState().cards;
+    const category = params.category || '';
+    const search = params.search || '';
 
     if (status !== 'loading' || thunkApi.requestId !== currentRequestId) {
         return;
     }
 
-    return await fetchCards({ category, search });
-});
-
-export const fetchCardsForSearch = createAsyncThunk<
-    Promise<Card[] | undefined>,
-    string,
-    { dispatch: AppDispatch; state: RootState }
->('cards/fetchCardsforSearch', async (search, thunkApi) => {
-    const {
-        currentCategory: category,
-        currentRequestId,
-        status,
-    } = thunkApi.getState().cards;
+    thunkApi.dispatch(categoryChanged(category));
     thunkApi.dispatch(searchTermChanged(search));
 
-    if (status !== 'loading' || thunkApi.requestId !== currentRequestId) {
-        return;
-    }
+    const url = createUrl(
+        'https://orgavision-codingchallenge.azurewebsites.net/v1/article',
+        { category, search }
+    );
 
-    return await fetchCards({ category, search });
+    const res = await fetchData<{
+        records: Card[];
+    }>(url);
+
+    return res.records;
 });
 
 const cardsAdapter = createEntityAdapter<Card>();
@@ -89,19 +68,20 @@ const cardsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addMatcher(isPendingAction, (state, action) => {
+        builder.addCase(fetchCards.pending, (state, action) => {
             const { requestId } = action.meta;
             if (state.status === 'idle' || 'succeeded') {
                 state.status = 'loading';
                 state.currentRequestId = requestId;
             }
         });
-        builder.addMatcher(isFulfilledAction, (state, action) => {
+        builder.addCase(fetchCards.fulfilled, (state, action) => {
             const { payload } = action;
             const { requestId } = action.meta;
             if (
                 state.status === 'loading' &&
-                state.currentRequestId === requestId
+                state.currentRequestId === requestId &&
+                Array.isArray(payload)
             ) {
                 if (payload.length > 0) {
                     state.noItems = false;
@@ -113,7 +93,7 @@ const cardsSlice = createSlice({
                 state.currentRequestId = undefined;
             }
         });
-        builder.addMatcher(isRejectedAction, (state, action) => {
+        builder.addCase(fetchCards.rejected, (state, action) => {
             const { requestId } = action.meta;
             if (
                 state.status === 'loading' &&

@@ -2,20 +2,28 @@ import React, { useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../reduxStore';
-import { fetchCardsForSearch } from '../cardsSlice';
 import styles from './Search.module.sass';
+import { useQuery } from '../../../../lib/hooks/useQuery';
+import { useHistory } from 'react-router-dom';
 
 export const Search = () => {
-    const dispatch = useDispatch();
+    const query = useQuery();
+    const history = useHistory();
+
     const searchTerm = useSelector(
         (state: RootState) => state.cards.currentSearchTerm
     );
     const searchInput = useRef<HTMLInputElement | null>(null);
 
     const onSearchTermChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(fetchCardsForSearch(e.target.value));
+        if (e.target.value) {
+            query.set('search', e.target.value);
+        } else {
+            query.delete('search');
+        }
+        history.push('/?' + query.toString());
     };
 
     const focusSearchInput = () => {
