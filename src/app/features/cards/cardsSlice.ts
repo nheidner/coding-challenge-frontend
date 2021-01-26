@@ -8,14 +8,19 @@ import {
 import { RootState, AppDispatch } from '../../reduxStore';
 import { Card } from '../../../lib/types';
 import { createUrl } from './utils';
-import { fetchData } from '../../../lib/api/fetchData';
+import fetchData from '../../../lib/api/fetchData';
 
 export const fetchCards = createAsyncThunk<
     Promise<Card[] | undefined>,
     { search: string | null; category: string | null },
     { dispatch: AppDispatch; state: RootState }
 >('cards/fetchCards', async (params, thunkApi) => {
-    const { currentRequestId, status } = thunkApi.getState().cards;
+    const {
+        currentRequestId,
+        status,
+        currentCategory,
+        currentSearchTerm,
+    } = thunkApi.getState().cards;
     const category = params.category || '';
     const search = params.search || '';
 
@@ -23,8 +28,12 @@ export const fetchCards = createAsyncThunk<
         return;
     }
 
-    thunkApi.dispatch(categoryChanged(category));
-    thunkApi.dispatch(searchTermChanged(search));
+    if (category !== currentCategory) {
+        thunkApi.dispatch(categoryChanged(category));
+    }
+    if (search !== currentSearchTerm) {
+        thunkApi.dispatch(searchTermChanged(search));
+    }
 
     const url = createUrl(
         'https://orgavision-codingchallenge.azurewebsites.net/v1/article',
@@ -40,7 +49,7 @@ export const fetchCards = createAsyncThunk<
 
 const cardsAdapter = createEntityAdapter<Card>();
 
-const initialState = cardsAdapter.getInitialState<{
+export const initialState = cardsAdapter.getInitialState<{
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
     currentCategory: string;
@@ -99,7 +108,6 @@ const cardsSlice = createSlice({
                 state.status === 'loading' &&
                 state.currentRequestId === requestId
             ) {
-                console.error(action.error.message);
                 state.status = 'failed';
                 state.error = 'request failed';
             }
@@ -113,5 +121,14 @@ export default cardsSlice.reducer;
 
 export const {
     selectIds: selectCardsIds,
+    selectEntities: selectCardsData,
     selectById: selectCardById,
 } = cardsAdapter.getSelectors((state: RootState) => state.cards);
+
+export const selectStatus = (state: RootState) => state.cards.status;
+export const selectError = (state: RootState) => state.cards.error;
+export const selectNoItems = (state: RootState) => state.cards.noItems;
+export const selectCurrentSearchTerm = (state: RootState) =>
+    state.cards.currentSearchTerm;
+export const selectCurrentCategory = (state: RootState) =>
+    state.cards.currentCategory;

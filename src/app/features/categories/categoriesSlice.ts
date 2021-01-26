@@ -5,11 +5,13 @@ import {
     createSlice,
     EntityId,
 } from '@reduxjs/toolkit';
-import { fetchData } from '../../../lib/api/fetchData';
+import fetchData from '../../../lib/api/fetchData';
 import { RootState } from '../../reduxStore';
 import { Category } from '../../../lib/types';
 
 const categoriesAdapter = createEntityAdapter<Category>();
+
+export const initialState = categoriesAdapter.getInitialState();
 
 export const fetchCategories = createAsyncThunk(
     'categories/fetchCategories',
@@ -24,7 +26,7 @@ export const fetchCategories = createAsyncThunk(
 
 const categoriesSlice = createSlice({
     name: 'categories',
-    initialState: categoriesAdapter.getInitialState(),
+    initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchCategories.fulfilled, categoriesAdapter.setAll);

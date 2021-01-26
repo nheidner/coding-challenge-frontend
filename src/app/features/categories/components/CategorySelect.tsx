@@ -2,19 +2,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAllCategories } from '../categoriesSlice';
-import { RootState } from '../../../reduxStore';
 import styles from './CategorySelect.module.sass';
 import { useQuery } from '../../../../lib/hooks/useQuery';
 import { useHistory } from 'react-router-dom';
+import { selectCurrentCategory } from '../../cards/cardsSlice';
 
 export const CategorySelect = () => {
     const query = useQuery();
     const history = useHistory();
-
     const categories = useSelector(selectAllCategories);
-    const currentCategory = useSelector(
-        (state: RootState) => state.cards.currentCategory
-    );
+    const currentCategory = useSelector(selectCurrentCategory);
 
     const onCategoryChanged = (
         e: React.ChangeEvent<HTMLSelectElement>
@@ -35,10 +32,12 @@ export const CategorySelect = () => {
 
     return (
         <div className={styles.selectCategory}>
+            {/* eslint-disable */}
             <select
                 className={styles.select}
                 value={currentCategory}
-                onChange={onCategoryChanged}>
+                onChange={onCategoryChanged}
+                role='listbox'>
                 <option value=''>Alle Kategorien</option>
                 {categoryOptions}
             </select>

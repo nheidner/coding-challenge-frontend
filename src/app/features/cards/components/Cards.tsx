@@ -6,10 +6,17 @@ import { useQuery } from '../../../../lib/hooks/useQuery';
 
 import { RootState } from '../../../reduxStore';
 import { selectCategoriesByIds } from '../../categories/categoriesSlice';
-import { selectCardsIds, selectCardById, fetchCards } from '../cardsSlice';
+import {
+    selectCardsIds,
+    selectCardById,
+    fetchCards,
+    selectNoItems,
+    selectStatus,
+    selectError,
+} from '../cardsSlice';
 import styles from './Cards.module.sass';
 
-const Card: FC<{ id: EntityId }> = ({ id }) => {
+export const Card: FC<{ id: EntityId }> = ({ id }) => {
     const card = useSelector((state: RootState) => selectCardById(state, id));
     const categoriesData = useSelector((state: RootState) =>
         selectCategoriesByIds(state, card ? card.fields.categoryId : [])
@@ -45,13 +52,12 @@ const Card: FC<{ id: EntityId }> = ({ id }) => {
 export const Cards = () => {
     const dispatch = useDispatch();
     const cardIds = useSelector(selectCardsIds);
-    const status = useSelector((state: RootState) => state.cards.status);
-    const noItems = useSelector((state: RootState) => state.cards.noItems);
-    const errorMessage = useSelector((state: RootState) => state.cards.error);
-
+    const status = useSelector(selectStatus);
+    const noItems = useSelector(selectNoItems);
+    const errorMessage = useSelector(selectError);
     const query = useQuery();
+
     const search = query.get('search');
-    console.log('search: ', search);
     const category = query.get('category');
 
     useEffect(() => {
@@ -69,7 +75,11 @@ export const Cards = () => {
     }
 
     if (status === 'failed') {
-        return <div className={styles.error}>{errorMessage}</div>;
+        return (
+            <div className={styles.error} data-testid='error'>
+                {errorMessage}
+            </div>
+        );
     }
 
     if (noItems) {

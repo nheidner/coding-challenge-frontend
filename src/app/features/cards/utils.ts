@@ -15,5 +15,4 @@ export const createQueryString = (params: QueryOptions): string => {
 };
 
 export const createUrl = (url: string, queryOptions?: QueryOptions): string =>
-    url +
-    (queryOptions ? `?${createQueryString(queryOptions as QueryOptions)}` : '');
+    url + (queryOptions ? `?${createQueryString(queryOptions)}` : '');

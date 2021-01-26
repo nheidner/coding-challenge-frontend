@@ -1,6 +1,4 @@
-export const fetchData = async <Response>(
-    endpoint: string
-): Promise<Response> => {
+const fetchData = async <Response>(endpoint: string): Promise<Response> => {
     const config: RequestInit = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -17,3 +15,5 @@ export const fetchData = async <Response>(
         return Promise.reject(err.message);
     }
 };
+
+export default fetchData;

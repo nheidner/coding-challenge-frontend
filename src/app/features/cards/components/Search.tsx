@@ -3,18 +3,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../reduxStore';
 import styles from './Search.module.sass';
 import { useQuery } from '../../../../lib/hooks/useQuery';
 import { useHistory } from 'react-router-dom';
+import { selectCurrentSearchTerm } from '../cardsSlice';
 
 export const Search = () => {
     const query = useQuery();
     const history = useHistory();
 
-    const searchTerm = useSelector(
-        (state: RootState) => state.cards.currentSearchTerm
-    );
+    const searchTerm = useSelector(selectCurrentSearchTerm);
+
     const searchInput = useRef<HTMLInputElement | null>(null);
 
     const onSearchTermChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
