@@ -6,9 +6,18 @@ import {
 } from '@reduxjs/toolkit';
 
 import { RootState, AppDispatch } from '../../reduxStore';
-import { Card } from '../../../lib/types';
 import { createUrl } from './utils';
 import fetchData from '../../../lib/api/fetchData';
+
+interface Card {
+    id: string;
+    fields: {
+        teaser: string;
+        title: string;
+        categoryId: string[];
+    };
+    createdTime: string;
+}
 
 export const fetchCards = createAsyncThunk<
     Promise<Card[] | undefined>,

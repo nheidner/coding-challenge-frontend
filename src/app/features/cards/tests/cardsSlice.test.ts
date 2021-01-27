@@ -1,6 +1,6 @@
-import { Store } from '../../../reduxStore';
 import { configureStore } from '@reduxjs/toolkit';
 
+import { Store } from '../../../reduxStore';
 import cardsReducer, {
     fetchCards,
     initialState,

@@ -1,15 +1,14 @@
 import React from 'react';
 
-import styles from './App.module.sass';
 import { Cards } from './features/cards/components/Cards';
 import { Navbar } from './components/Navbar';
 
 function App() {
     return (
-        <div className={styles.app}>
+        <React.Fragment>
             <Navbar />
             <Cards />
-        </div>
+        </React.Fragment>
     );
 }
 

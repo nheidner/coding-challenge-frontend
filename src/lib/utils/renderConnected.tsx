@@ -29,10 +29,10 @@ const renderConnected = (
         categories: categoriesReducer,
     });
     const store = createStore(reducer, initialState, applyMiddleware(thunk));
-
     const Wrapper: FC = ({ children }) => (
         <Provider store={store}>{children}</Provider>
     );
+
     return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
 

@@ -5,9 +5,18 @@ import {
     createSlice,
     EntityId,
 } from '@reduxjs/toolkit';
+
 import fetchData from '../../../lib/api/fetchData';
 import { RootState } from '../../reduxStore';
-import { Category } from '../../../lib/types';
+
+export interface Category {
+    id: string;
+    fields: {
+        color: string;
+        name: string;
+    };
+    createdTime: string;
+}
 
 const categoriesAdapter = createEntityAdapter<Category>();
 

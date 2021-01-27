@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { selectAllCategories } from '../categoriesSlice';
 import styles from './CategorySelect.module.sass';
 import { useQuery } from '../../../../lib/hooks/useQuery';
-import { useHistory } from 'react-router-dom';
 import { selectCurrentCategory } from '../../cards/cardsSlice';
 
 export const CategorySelect = () => {

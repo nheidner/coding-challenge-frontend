@@ -2,7 +2,6 @@ import { EntityId } from '@reduxjs/toolkit';
 import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useQuery } from '../../../../lib/hooks/useQuery';
 
 import { RootState } from '../../../reduxStore';
 import { selectCategoriesByIds } from '../../categories/categoriesSlice';
@@ -15,6 +14,7 @@ import {
     selectError,
 } from '../cardsSlice';
 import styles from './Cards.module.sass';
+import { useQuery } from '../../../../lib/hooks/useQuery';
 
 export const Card: FC<{ id: EntityId }> = ({ id }) => {
     const card = useSelector((state: RootState) => selectCardById(state, id));

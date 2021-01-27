@@ -6,16 +6,7 @@ import { CategorySelect } from '../components/CategorySelect';
 import renderConnected from '../../../../lib/utils/renderConnected';
 
 describe('Category Select', () => {
-    it('should render "Alle Kategorien" as selected on initial render', () => {
-        renderConnected(
-            <MemoryRouter>
-                <CategorySelect />
-            </MemoryRouter>
-        );
-
-        expect(screen.queryByDisplayValue('Alle Kategorien')).not.toBeNull();
-    });
-    it('should render all categories from the store', async () => {
+    it('should render "Alle Kategorien" option as selected on initial render', () => {
         const categoryName1 = 'IT-Self-Service';
         const categoryName2 = 'Wegweiser';
         const initialState = {
@@ -42,9 +33,14 @@ describe('Category Select', () => {
             { initialState }
         );
 
-        expect(screen.queryByText('Alle Kategorien')).not.toBeNull();
-        expect(screen.queryByText(categoryName1)).not.toBeNull();
-        expect(screen.queryByText(categoryName1)).not.toBeNull();
+        const option1 = screen.getByText(
+            'Alle Kategorien'
+        ) as HTMLOptionElement;
+        const option2 = screen.getByText(categoryName1) as HTMLOptionElement;
+        const option3 = screen.getByText(categoryName2) as HTMLOptionElement;
+        expect(option1.selected).toBeTruthy();
+        expect(option2.selected).toBeFalsy();
+        expect(option3.selected).toBeFalsy();
     });
     it('should render state property of currentCategory as selected', () => {
         const categoryName = 'IT-Self-Service';
@@ -70,8 +66,12 @@ describe('Category Select', () => {
             { initialState }
         );
 
-        const option = screen.getByText(categoryName) as HTMLOptionElement;
-        expect(option.selected).toBeTruthy();
+        const option1 = screen.getByText(
+            'Alle Kategorien'
+        ) as HTMLOptionElement;
+        const option2 = screen.getByText(categoryName) as HTMLOptionElement;
+        expect(option1.selected).toBeFalsy();
+        expect(option2.selected).toBeTruthy();
     });
     it('should set correct URL Search Params when category is changed', () => {
         const categoryName = 'IT-Self-Service';
@@ -97,8 +97,8 @@ describe('Category Select', () => {
             </Router>,
             { initialState }
         );
-        const selectElem = screen.getByRole('listbox') as HTMLSelectElement;
 
+        const selectElem = screen.getByRole('listbox') as HTMLSelectElement;
         fireEvent.change(selectElem, { target: { value: categoryName } });
 
         expect(history.location.search).toBe(`?category=${categoryName}`);
